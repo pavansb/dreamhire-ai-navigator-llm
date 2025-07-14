@@ -22,6 +22,6 @@ async def close_mongo_connection():
 
 def get_database():
     """Get database instance."""
-    if not db.database:
+    if db.database is None:
         raise Exception("Database not connected. Please ensure the application has started properly.")
     return db.database 
