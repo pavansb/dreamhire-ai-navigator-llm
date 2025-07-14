@@ -1,1 +1,0 @@
-# Database models for DreamHire AI Navigator 
