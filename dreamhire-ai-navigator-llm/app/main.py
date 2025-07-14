@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from app.core.config import settings
 from app.core.database import connect_to_mongo, close_mongo_connection
-from app.api.routes import ping
+from app.api.routes import ping, onboarding
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -32,6 +32,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(ping.router, prefix=settings.api_prefix)
+app.include_router(onboarding.router, prefix=settings.api_prefix)
 
 @app.get("/")
 async def root():

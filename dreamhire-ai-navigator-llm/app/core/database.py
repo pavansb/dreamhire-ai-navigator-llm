@@ -1,8 +1,9 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from .config import settings
+from typing import Optional
 
 class Database:
-    client: AsyncIOMotorClient = None
+    client: Optional[AsyncIOMotorClient] = None
     database = None
 
 db = Database()
@@ -21,4 +22,6 @@ async def close_mongo_connection():
 
 def get_database():
     """Get database instance."""
+    if not db.database:
+        raise Exception("Database not connected. Please ensure the application has started properly.")
     return db.database 
