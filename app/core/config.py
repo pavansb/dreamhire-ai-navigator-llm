@@ -1,5 +1,5 @@
-from pydantic_settings import BaseSettings
-from typing import Optional
+from pydantic import BaseSettings
+from typing import List
 
 class Settings(BaseSettings):
     # MongoDB Configuration
@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     database_name: str = "dreamhire_ai_llm"
     
     # CORS Configuration
-    cors_origins: list[str] = ["http://localhost:8080", "http://localhost:5173"]
+    cors_origins: List[str] = ["http://localhost:8080", "http://localhost:5173"]
     
     # API Configuration
     api_prefix: str = "/api"
@@ -18,4 +18,4 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
-settings = Settings() 
+settings = Settings()
