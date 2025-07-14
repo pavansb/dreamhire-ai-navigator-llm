@@ -19,7 +19,7 @@ async def submit_onboarding(payload: OnboardingPayload):
             raise HTTPException(status_code=500, detail=f"Database connection failed: {str(e)}")
         
         user_id = payload.user_id
-        current_time = datetime.utcnow()
+        current_time = datetime.utcnow().isoformat()
         
         # Create user basic details record
         user_basic_details = {
@@ -27,8 +27,8 @@ async def submit_onboarding(payload: OnboardingPayload):
             "full_name": payload.full_name,
             "email": payload.email,
             "location": payload.location,
-            "created_at": current_time,
-            "updated_at": current_time
+            "onboarding_complete": True,
+            "timestamp": current_time
         }
         
         # Create company details record
@@ -37,20 +37,17 @@ async def submit_onboarding(payload: OnboardingPayload):
             "company_name": payload.company_name,
             "company_size": payload.company_size,
             "industry": payload.industry,
-            "created_at": current_time,
-            "updated_at": current_time
+            "timestamp": current_time
         }
         
         # Create copilot config record
-        selected_automation_options = [k for k, v in payload.automation.items() if v]
         copilot_config = {
             "user_id": user_id,
-            "selected_automation_options": selected_automation_options,
-            "calendar_integration": bool(payload.calendar_integration),
-            "email_integration": bool(payload.email_integration),
-            "ats_integration": payload.ats_selected,
-            "created_at": current_time,
-            "updated_at": current_time
+            "automation": payload.automation,
+            "calendar_integration": payload.calendar_integration,
+            "email_integration": payload.email_integration,
+            "ats_selected": payload.ats_selected,
+            "timestamp": current_time
         }
         
         # Store user basic details
@@ -72,8 +69,7 @@ async def submit_onboarding(payload: OnboardingPayload):
             {
                 "$set": {
                     "is_onboarded": True,
-                    "onboarding_completed_at": current_time,
-                    "updated_at": current_time
+                    "onboarding_completed_at": current_time
                 },
                 "$setOnInsert": {
                     "user_id": user_id,
@@ -85,7 +81,7 @@ async def submit_onboarding(payload: OnboardingPayload):
         
         return OnboardingResponse(
             success=True,
-            message="Onboarding completed successfully!",
+            message=f"Onboarding completed successfully! All 3 collections updated: user_basic_details ({user_basic_result.inserted_id}), company_details ({company_result.inserted_id}), copilot_config ({copilot_result.inserted_id})",
             dashboard_url="/dashboard",
             user_id=user_id
         )

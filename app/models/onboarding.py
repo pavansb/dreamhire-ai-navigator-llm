@@ -23,8 +23,8 @@ class UserBasicDetails(BaseModel):
     full_name: str
     email: EmailStr
     location: str
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    onboarding_complete: bool = True
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
 
     class Config:
         allow_population_by_field_name = True
@@ -37,8 +37,7 @@ class CompanyDetails(BaseModel):
     company_name: str
     company_size: str
     industry: str
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
 
     class Config:
         allow_population_by_field_name = True
@@ -48,12 +47,11 @@ class CompanyDetails(BaseModel):
 class CopilotConfig(BaseModel):
     id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
     user_id: str
-    selected_automation_options: List[str]
-    calendar_integration: bool = False
-    email_integration: bool = False
-    ats_integration: str = ""
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    automation: dict
+    calendar_integration: str
+    email_integration: str
+    ats_selected: str
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
 
     class Config:
         allow_population_by_field_name = True

@@ -1,10 +1,17 @@
 from pydantic import BaseSettings
 from typing import List
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class Settings(BaseSettings):
     # MongoDB Configuration
-    mongodb_uri: str = "mongodb+srv://contactpavansb:hDv2aD9vMgJg1b6D@dh-ai-llm.pjmnlno.mongodb.net/?retryWrites=true&w=majority&appName=dh-ai-llm"
-    database_name: str = "dreamhire_ai_llm"
+    mongodb_uri: str
+    database_name: str = "dreamhire-ai-navigator"
+    
+    # OpenAI API Key
+    openai_api_key: str
     
     # CORS Configuration
     cors_origins: List[str] = ["http://localhost:8080", "http://localhost:5173"]
