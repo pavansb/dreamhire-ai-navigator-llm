@@ -64,9 +64,17 @@ class CopilotConfig(BaseModel):
     }
 
 class OnboardingPayload(BaseModel):
-    user_basic_details: UserBasicDetails
-    company_details: CompanyDetails
-    copilot_config: CopilotConfig
+    user_id: str
+    full_name: str
+    email: str
+    location: str
+    company_name: str
+    company_size: str
+    industry: str
+    automation: dict
+    calendar_integration: str
+    email_integration: str
+    ats_selected: str
 
 class OnboardingResponse(BaseModel):
     success: bool

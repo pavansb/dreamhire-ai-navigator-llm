@@ -18,37 +18,52 @@ async def submit_onboarding(payload: OnboardingPayload):
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Database connection failed: {str(e)}")
         
-        # Generate a unique user_id if not provided
-        user_id = payload.user_basic_details.user_id or str(uuid.uuid4())
-        
-        # Update all records to use the same user_id
-        payload.user_basic_details.user_id = user_id
-        payload.company_details.user_id = user_id
-        payload.copilot_config.user_id = user_id
-        
-        # Update timestamps
+        user_id = payload.user_id
         current_time = datetime.utcnow()
-        payload.user_basic_details.updated_at = current_time
-        payload.company_details.updated_at = current_time
-        payload.copilot_config.updated_at = current_time
+        
+        # Create user basic details record
+        user_basic_details = {
+            "user_id": user_id,
+            "full_name": payload.full_name,
+            "email": payload.email,
+            "location": payload.location,
+            "created_at": current_time,
+            "updated_at": current_time
+        }
+        
+        # Create company details record
+        company_details = {
+            "user_id": user_id,
+            "company_name": payload.company_name,
+            "company_size": payload.company_size,
+            "industry": payload.industry,
+            "created_at": current_time,
+            "updated_at": current_time
+        }
+        
+        # Create copilot config record
+        selected_automation_options = [k for k, v in payload.automation.items() if v]
+        copilot_config = {
+            "user_id": user_id,
+            "selected_automation_options": selected_automation_options,
+            "calendar_integration": bool(payload.calendar_integration),
+            "email_integration": bool(payload.email_integration),
+            "ats_integration": payload.ats_selected,
+            "created_at": current_time,
+            "updated_at": current_time
+        }
         
         # Store user basic details
         user_basic_collection = db["user_basic_details"]
-        user_basic_result = await user_basic_collection.insert_one(
-            payload.user_basic_details.dict(by_alias=True)
-        )
+        user_basic_result = await user_basic_collection.insert_one(user_basic_details)
         
         # Store company details
         company_collection = db["company_details"]
-        company_result = await company_collection.insert_one(
-            payload.company_details.dict(by_alias=True)
-        )
+        company_result = await company_collection.insert_one(company_details)
         
         # Store copilot config
         copilot_collection = db["copilot_config"]
-        copilot_result = await copilot_collection.insert_one(
-            payload.copilot_config.dict(by_alias=True)
-        )
+        copilot_result = await copilot_collection.insert_one(copilot_config)
         
         # Create or update user profile with onboarding flag
         users_collection = db["users"]
