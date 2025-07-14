@@ -117,3 +117,23 @@ async def get_onboarding_status(user_id: str):
             status_code=500,
             detail=f"Failed to check onboarding status: {str(e)}"
         ) 
+
+@router.get("/copilot_config/{user_id}")
+async def get_copilot_config(user_id: str):
+    """
+    Get the copilot_config document for a user.
+    """
+    try:
+        db = get_database()
+        copilot_collection = db["copilot_config"]
+        config = await copilot_collection.find_one({"user_id": user_id})
+        if not config:
+            raise HTTPException(status_code=404, detail="copilot_config not found for user")
+        # Convert ObjectId to string for JSON serialization
+        config["_id"] = str(config["_id"])
+        return config
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to fetch copilot_config: {str(e)}"
+        ) 
