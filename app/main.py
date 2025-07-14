@@ -21,10 +21,17 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Update CORS origins to include staging domain
+origins = [
+    "http://localhost:8080",
+    "http://localhost:5173",
+    "https://dreamhire-ai-navigator.lovable.app"
+]
+
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
