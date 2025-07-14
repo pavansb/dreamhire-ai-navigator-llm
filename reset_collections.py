@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Seed script for onboarding collections in DreamHire AI Navigator.
-Creates collections with proper schema and indexes for user onboarding data.
+Reset script to drop and recreate onboarding collections with correct schema.
 """
 
 import asyncio
@@ -12,6 +11,17 @@ from datetime import datetime
 
 # Load environment variables
 load_dotenv()
+
+async def drop_collections(db):
+    """Drop existing collections."""
+    collections_to_drop = ["user_basic_details", "company_details", "copilot_config"]
+    
+    for collection_name in collections_to_drop:
+        try:
+            await db.drop_collection(collection_name)
+            print(f"🗑️  Dropped collection: {collection_name}")
+        except Exception as e:
+            print(f"⚠️  Error dropping collection {collection_name}: {e}")
 
 async def create_collection_with_schema(db, collection_name, schema):
     """Create a collection with JSON schema validation."""
@@ -28,10 +38,7 @@ async def create_collection_with_schema(db, collection_name, schema):
         )
         print(f"✅ Created collection: {collection_name}")
     except Exception as e:
-        if "already exists" in str(e).lower():
-            print(f"ℹ️  Collection already exists: {collection_name}")
-        else:
-            print(f"⚠️  Error creating collection {collection_name}: {e}")
+        print(f"⚠️  Error creating collection {collection_name}: {e}")
 
 async def create_index(db, collection_name, index_field, unique=True):
     """Create an index on the specified field."""
@@ -43,7 +50,7 @@ async def create_index(db, collection_name, index_field, unique=True):
         print(f"⚠️  Error creating index on {index_field} for {collection_name}: {e}")
 
 async def main():
-    """Main function to create collections and indexes."""
+    """Main function to reset collections."""
     # Get MongoDB URI from environment
     mongodb_uri = os.getenv("MONGODB_URI")
     if not mongodb_uri:
@@ -54,7 +61,10 @@ async def main():
     client = AsyncIOMotorClient(mongodb_uri)
     db = client["dreamhire-ai-navigator"]
     
-    print("🚀 Starting collection setup...")
+    print("🚀 Starting collection reset...")
+    
+    # Drop existing collections
+    await drop_collections(db)
     
     # Define schemas for each collection
     user_basic_details_schema = {
@@ -113,7 +123,7 @@ async def main():
     
     # Close the connection
     client.close()
-    print("🎉 Collection setup completed successfully!")
+    print("🎉 Collection reset completed successfully!")
 
 if __name__ == "__main__":
     asyncio.run(main()) 

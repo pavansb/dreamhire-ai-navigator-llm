@@ -19,7 +19,7 @@ async def submit_onboarding(payload: OnboardingPayload):
             raise HTTPException(status_code=500, detail=f"Database connection failed: {str(e)}")
         
         user_id = payload.user_id
-        current_time = datetime.utcnow().isoformat()
+        current_time = datetime.utcnow()
         
         # Create user basic details record
         user_basic_details = {

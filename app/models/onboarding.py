@@ -24,7 +24,7 @@ class UserBasicDetails(BaseModel):
     email: EmailStr
     location: str
     onboarding_complete: bool = True
-    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
         allow_population_by_field_name = True
@@ -37,7 +37,7 @@ class CompanyDetails(BaseModel):
     company_name: str
     company_size: str
     industry: str
-    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
         allow_population_by_field_name = True
@@ -51,7 +51,7 @@ class CopilotConfig(BaseModel):
     calendar_integration: str
     email_integration: str
     ats_selected: str
-    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
         allow_population_by_field_name = True
