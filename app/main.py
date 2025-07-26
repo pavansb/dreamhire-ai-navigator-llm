@@ -41,6 +41,10 @@ app.add_middleware(
 app.include_router(ping.router, prefix=settings.api_prefix)
 app.include_router(onboarding.router, prefix=settings.api_prefix)
 
+# Import and include Co-Pilot actions router
+from app.api.routes import copilot_actions
+app.include_router(copilot_actions.router, prefix=settings.api_prefix)
+
 @app.get("/")
 async def root():
     """Root endpoint."""
