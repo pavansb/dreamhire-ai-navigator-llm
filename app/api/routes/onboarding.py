@@ -97,8 +97,8 @@ async def submit_onboarding(payload: OnboardingPayload):
         user_basic_result = await user_basic_collection.insert_one(user_basic_details)
         
         # Store company details
-        company_collection = db["company_details"]
-        company_result = await company_collection.insert_one(company_details)
+        organisations_collection = db["organisations"]
+        company_result = await organisations_collection.insert_one(company_details)
         
         # Store copilot config
         copilot_collection = db["copilot_config"]
